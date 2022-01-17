@@ -1,2 +1,2 @@
 # Study hard
-Study project for client - server architecture learning
+Study project for client-server architecture learning
