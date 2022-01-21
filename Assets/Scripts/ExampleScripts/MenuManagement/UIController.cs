@@ -35,6 +35,8 @@ namespace ExampleGB
             _shutDownPhotonButton.onClick.AddListener(() => ShutDownPhoton());
             _connectPlayfabButton.onClick.AddListener(() => StartPlayfab());
             _closeApplication.onClick.AddListener(() => Close());
+            _photon.OnRecieveMSG += RecieveMessage;
+            _playFab.OnRecieveMSG += RecieveMessage;
         }
 
         private void Update()
@@ -46,8 +48,7 @@ namespace ExampleGB
         }
 
         private void StartPhoton()
-        {
-            _photon.OnRecieveMSG += RecieveMessage;
+        {            
             _photon.Connect();
             _startPhotonButton.interactable = false;
             _shutDownPhotonButton.interactable = true;
@@ -61,8 +62,7 @@ namespace ExampleGB
         }
 
         private void StartPlayfab()
-        {
-            _playFab.OnRecieveMSG += RecieveMessage;
+        {            
             _playFab.Connect();
             _connectPlayfabButton.interactable = false;            
         }
