@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayFabEditorPrefsSO
   m_EditorClassIdentifier: 
   DevAccountEmail: bismard@rambler.ru
-  DevAccountToken: pekz9hpxsygdmiwsin65kru3otgpx7xbq5xmrus8jenkyhm7xgpcthowsubcapitmbsw7nqg3f1ei5wxriktsbn7foofew4rqeroctuxsn3i6dbnsd976fn47qnhonin1h3n6mhtgexbez993u4q8my8gok7upbtoqroqbn6xp7uhu8cwzkccg4gtryz4ax8zmhmwqeq
+  DevAccountToken: 7fkgwh75n34so8c4bmfyuw4633qhdw3e87tj14j9n7qfyhj17qmiikftpygf4nugo3gabzzi97drjp4soc9rbpou58xmi3ea9kixttss746kjd5ya63bwpuzaumqfsm3tq89cgrs1z33yk73pge849fjgftgqmtcdttn94uahcixrstu6n6ryqtq168s9k3hj9z8rabp
   SelectedStudio: Meat Addiction
   SdkPath: Assets/PlayFabSDK
   EdExPath: 
