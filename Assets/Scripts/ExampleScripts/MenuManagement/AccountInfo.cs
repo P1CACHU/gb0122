@@ -6,7 +6,7 @@
         private readonly string _password;
         private readonly string _email;
 
-        public AccountInfo(string name, string password, string email)
+        public AccountInfo(string name, string password, string email = null)
         {
             _username = name;
             _password = password;

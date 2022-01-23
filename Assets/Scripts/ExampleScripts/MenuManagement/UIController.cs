@@ -13,7 +13,8 @@ namespace ExampleGB
         [SerializeField] private Button _connectPlayfabButton;
         [SerializeField] private Button _closeApplication;
 
-        [SerializeField] private PopUpMenu _createAccountMenu;
+        [SerializeField] private AccountMenu _createAccountMenu;
+        [SerializeField] private AccountMenu _logInAccount;
         [SerializeField] private ChatFieldUI _textField;
 
         private PhotonLogin _photon;

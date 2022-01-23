@@ -1,5 +1,6 @@
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 using UnityEngine;
 
 
@@ -14,7 +15,7 @@ namespace ExampleGB
         private const string CONNECTION = "PlayFab Success";
         private const string CREATE_ACCOUNT_SUCCESS = "Account creation Success";
 
-        //private string _username;
+        private string _username;
         //private string _password;
         //private string _email;
 
@@ -44,6 +45,23 @@ namespace ExampleGB
             });
         }
 
+        public void LogIntoAccount(AccountInfo info)
+        {
+            PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest
+            {
+                Username = info.Username,
+                Password = info.Password,
+            }, resuil =>
+            {
+                OnRecieveMSG?.Invoke(CREATE_ACCOUNT_SUCCESS + " " + info.Username);
+                Debug.Log(CREATE_ACCOUNT_SUCCESS);
+            }, error =>
+            {
+                OnRecieveMSG?.Invoke($"Error: {error}");
+                Debug.Log($"Error: {error}");
+            });
+        }
+
         public void Connect()
         {
             if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
@@ -53,12 +71,17 @@ namespace ExampleGB
                 Debug.Log(TITLE_ID);
             }
 
-            var request = new LoginWithCustomIDRequest { CustomId = _username, CreateAccount = true };
-            PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
+            var needCreation = PlayerPrefs.HasKey("player-unique-id");
+            var id = Guid.NewGuid().ToString();
+            var request = new LoginWithCustomIDRequest { CustomId = _username, CreateAccount = !needCreation };
+            PlayFabClientAPI.LoginWithCustomID(request, result =>
+            {
+                PlayerPrefs.SetString("player-unique-id", id);
+            }, OnLoginFailure);
         }
 
         private void OnLoginSuccess(LoginResult result)
-        {
+        {            
             OnRecieveMSG?.Invoke(CONNECTION);
             Debug.Log(CONNECTION);
         }
