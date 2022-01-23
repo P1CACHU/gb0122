@@ -12,12 +12,36 @@ namespace ExampleGB
 
         private const string TITLE_ID = "Title ID was installed";
         private const string CONNECTION = "PlayFab Success";
+        private const string CREATE_ACCOUNT_SUCCESS = "Account creation Success";
 
-        private string _customId;
+        //private string _username;
+        //private string _password;
+        //private string _email;
 
-        public void CreateCustomId(string name)
+        //public void UpdateInfo(AccountInfo info)
+        //{
+        //    _username = info.Username;
+        //    _password = info.Password;
+        //    _email = info.Email;
+        //}
+
+        public void CreateAccount(AccountInfo info)
         {
-            _customId = name;
+            PlayFabClientAPI.RegisterPlayFabUser(new RegisterPlayFabUserRequest
+            {
+                Username = info.Username,
+                Email = info.Email,
+                Password = info.Password,
+                RequireBothUsernameAndEmail = true
+            }, resuil =>
+            {
+                OnRecieveMSG?.Invoke(CREATE_ACCOUNT_SUCCESS);
+                Debug.Log(CREATE_ACCOUNT_SUCCESS);
+            }, error =>
+            {
+                OnRecieveMSG?.Invoke($"Error: {error}");
+                Debug.Log($"Error: {error}");
+            });
         }
 
         public void Connect()
@@ -29,7 +53,7 @@ namespace ExampleGB
                 Debug.Log(TITLE_ID);
             }
 
-            var request = new LoginWithCustomIDRequest { CustomId = _customId, CreateAccount = true };
+            var request = new LoginWithCustomIDRequest { CustomId = _username, CreateAccount = true };
             PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
         }
 

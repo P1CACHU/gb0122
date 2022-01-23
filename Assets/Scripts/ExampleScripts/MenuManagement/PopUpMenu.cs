@@ -7,27 +7,26 @@ namespace ExampleGB
 {
     public sealed class PopUpMenu : MonoBehaviour
     {
-        private TMP_InputField _inputField;
+        [SerializeField] private TMP_InputField _username;
+        [SerializeField] private TMP_InputField _password;
+        [SerializeField] private TMP_InputField _email;
 
-        public void Initialize()
+        public AccountInfo GetAccountInfo()
         {
-            _inputField = GetComponentInChildren<TMP_InputField>(true);
-        }
-
-        public string TypeName()
-        {
-            return _inputField.text;            
+            return new AccountInfo(_username.name, _password.name, _email.name);
         }
 
         public void ShowMenu()
         {
             gameObject.SetActive(true);
-            _inputField.ActivateInputField();
+            _username.ActivateInputField();
         }
 
         public void CloseMenu()
         {
-            _inputField.text = "";
+            _username.text = "";
+            _password.text = "";
+            _email.text = "";
             gameObject.SetActive(false);
         }
     }

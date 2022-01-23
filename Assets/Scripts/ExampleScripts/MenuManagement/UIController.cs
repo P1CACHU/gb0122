@@ -13,7 +13,7 @@ namespace ExampleGB
         [SerializeField] private Button _connectPlayfabButton;
         [SerializeField] private Button _closeApplication;
 
-        [SerializeField] private PopUpMenu _nameMenu;
+        [SerializeField] private PopUpMenu _createAccountMenu;
         [SerializeField] private ChatFieldUI _textField;
 
         private PhotonLogin _photon;
@@ -28,8 +28,7 @@ namespace ExampleGB
         private void Start()
         {
             _textField.Initialize();
-            _nameMenu.Initialize();
-            _nameMenu.ShowMenu();
+            _createAccountMenu.ShowMenu();
             DisableButtons();
             _startPhotonButton.onClick.AddListener(() => StartPhoton());
             _shutDownPhotonButton.onClick.AddListener(() => ShutDownPhoton());
@@ -41,9 +40,9 @@ namespace ExampleGB
 
         private void Update()
         {
-            if (_nameMenu.isActiveAndEnabled && Input.GetKeyDown(KeyCode.Return))
+            if (_createAccountMenu.isActiveAndEnabled && Input.GetKeyDown(KeyCode.Return))
             {
-                TypeName();
+                SignUp();
             }
         }
 
@@ -67,10 +66,10 @@ namespace ExampleGB
             _connectPlayfabButton.interactable = false;            
         }
 
-        private void TypeName()
+        private void SignUp()
         {
-            _playFab.CreateCustomId(_nameMenu.TypeName());
-            _nameMenu.CloseMenu();
+            _playFab.CreateAccount(_createAccountMenu.GetAccountInfo());
+            _createAccountMenu.CloseMenu();
             EnableButtons();
         }
 
