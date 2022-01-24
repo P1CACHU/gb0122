@@ -1,53 +1,62 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
-public enum ConnectionState
+public class ConnectionButtonWidget : ButtonWidget
 {
-    Default,
-    Success,
-    Fail,
-    Waiting
-}
+    [SerializeField] private Text _text;
+    [SerializeField] private ConnectionIndicator _connectionIndicator;
 
-public class ConnectionButtonWidget : MonoBehaviour
-{
-    public Button button => _button;
+    private Dictionary<Type, UnityAction> _actions;
 
-    [SerializeField] private Button _button;
-    [SerializeField] private TMP_Text _text;
+    protected override void Awake()
+    {
+        base.Awake();
 
-    [Header("Button state colors")]
-    [SerializeField] private Color _defaultColor;
-    [SerializeField] private Color _successColor;
-    [SerializeField] private Color _failColor;
-    [SerializeField] private Color _waitingColor;
+        _text.text = String.Empty;
+    }
 
     public void Refresh(ConnectionState resultState, string text)
+    {
+        RefreshIndicator(resultState);
+        RefreshText(text);
+    }
+
+    public void Refresh(ConnectionState resultState)
+    {
+        RefreshIndicator(resultState);
+    }
+
+    void RefreshIndicator(ConnectionState resultState)
     {
         switch (resultState)
         {
             case ConnectionState.Waiting:
-                _button.image.color = _waitingColor;
+                _connectionIndicator.Refresh(resultState);
                 break;
 
             case ConnectionState.Success:
-                _button.image.color = _successColor;
+                _connectionIndicator.Refresh(resultState);
                 break;
 
             case ConnectionState.Fail:
-                _button.image.color = _failColor;
+                _connectionIndicator.Refresh(resultState);
                 break;
 
             case ConnectionState.Default:
-                _button.image.color = _defaultColor;
+                _connectionIndicator.Refresh(resultState);
                 break;
 
             default:
                 throw new Exception("Unknown connection state");
         }
-        
+    }
+
+    void RefreshText(string text)
+    {
         _text.text = text;
     }
 }

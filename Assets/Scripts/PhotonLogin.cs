@@ -14,14 +14,14 @@ public class PhotonLogin : MonoBehaviourPunCallbacks
         _connectButton.Refresh(ConnectionState.Default, "Connect to Photon button");
         _disconnectButton.Refresh(ConnectionState.Default, "Disconnect from Photon button");
 
-        _connectButton.button.onClick.AddListener(OnConnectButtonClick);
-        _disconnectButton.button.onClick.AddListener(OnDisconnectButtonClick);
+        _connectButton.AddListener(GetType(), OnConnectButtonClick);
+        _disconnectButton.AddListener(GetType(), OnDisconnectButtonClick);
     }
 
     private void OnDestroy()
     {
-        _connectButton.button.onClick.RemoveListener(OnConnectButtonClick);
-        _disconnectButton.button.onClick.RemoveListener(OnDisconnectButtonClick);
+        _connectButton.RemoveListener(GetType());
+        _disconnectButton.RemoveListener(GetType());
     }
 
     void OnConnectButtonClick()

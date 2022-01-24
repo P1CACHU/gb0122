@@ -1,27 +1,42 @@
 using PlayFab;
 using PlayFab.ClientModels;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ProfileManager : MonoBehaviour
 {
-    [SerializeField] private Text _id;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject _playerInfoGo;
+    [SerializeField] private Text _playerInfoText;
+    [SerializeField] private ButtonWidget _resetAccountButton;
+
+    private void Start()
     {
-        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), success =>
+        _playerInfoGo.SetActive(false);
+        _resetAccountButton.AddListener(GetType(), ResetAccount);
+
+        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), SetAccountInfo, errorCallback =>
         {
-            _id.text = $"Welcome back, Player {success.AccountInfo.PlayFabId}";
-        }, errorCallback =>
-        {
+            _playerInfoText.text = $"Something went wrong:\n {errorCallback}";
         });
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        
+        _resetAccountButton.RemoveListener(GetType());
+    }
+
+    void SetAccountInfo(GetAccountInfoResult success)
+    {
+        _playerInfoGo.SetActive(true);
+        _playerInfoText.text = $"Welcome back, Player {success.AccountInfo.PlayFabId}\n" +
+                               $"You create account at {success.AccountInfo.Created}\n" +
+                               $"Your username is {success.AccountInfo.Username}";
+    }
+
+    private void ResetAccount()
+    {
+        PlayerPrefs.DeleteKey(PlayFabLogin.AuthKey);
+        SceneManager.LoadScene("Bootstrap");
     }
 }

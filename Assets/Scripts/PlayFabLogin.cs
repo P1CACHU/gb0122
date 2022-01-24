@@ -1,26 +1,60 @@
+using System;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayFabLogin : MonoBehaviour
 {
+    public const string AuthKey = "player-unique-id";
+
     [SerializeField] private ConnectionButtonWidget _connectButton;
+    [SerializeField] private PlayerInfo _playerInfo;
 
-    private void Awake()
+    private void Start()
     {
-        _connectButton.Refresh(ConnectionState.Default, "Playfab connection button");
-
-        _connectButton.button.onClick.AddListener(OnConnectButtonClick);
+        _connectButton.AddListener(GetType(), LoginWithCustomID);
     }
 
     private void OnDestroy()
     {
-        _connectButton.button.onClick.RemoveListener(OnConnectButtonClick);
+        _connectButton.RemoveListener(GetType());
     }
 
-    void OnConnectButtonClick()
+    public void CreateAccount()
     {
-        _connectButton.Refresh(ConnectionState.Waiting, "Waiting for connection");
+        PlayFabClientAPI.RegisterPlayFabUser(new RegisterPlayFabUserRequest
+        {
+            Username = _playerInfo.username,
+            Email = _playerInfo.mail,
+            Password = _playerInfo.pass,
+            RequireBothUsernameAndEmail = true
+        }, result =>
+        {
+            Debug.Log("Success");
+        }, errorCallback => {
+            Debug.LogError($"Error: {errorCallback}");
+        });
+    }
+
+    public void Login()
+    {
+        PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest
+        {
+            Username = _playerInfo.username,
+            Password = _playerInfo.pass
+        }, result =>
+        {
+            Debug.Log($"Success: {_playerInfo.username}");
+        }, errorCallback =>
+        {
+            Debug.LogError($"Error: {errorCallback}");
+        });
+    }
+
+    private void LoginWithCustomID()
+    {
+        _connectButton.Refresh(ConnectionState.Waiting);
 
         if (string.IsNullOrEmpty(PlayFabSettings.staticSettings.TitleId))
         {
@@ -28,16 +62,21 @@ public class PlayFabLogin : MonoBehaviour
             Debug.Log("Title ID was installed");
         }
 
-        var request = new LoginWithCustomIDRequest {CustomId = "lesson3", CreateAccount = true};
-        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFailure);
+        var needCreation = !PlayerPrefs.HasKey(AuthKey);
+        Debug.Log($"needCreation = {needCreation}");
+        var id = PlayerPrefs.GetString(AuthKey, Guid.NewGuid().ToString());
+        Debug.Log($"id = {id}");
+        var request = new LoginWithCustomIDRequest {CustomId = id, CreateAccount = needCreation};
+        PlayFabClientAPI.LoginWithCustomID(request, result =>
+        {
+            OnLoginSuccess(id);
+        }, OnLoginFailure);
     }
 
-    private void OnLoginSuccess(LoginResult result)
+    private void OnLoginSuccess(string id)
     {
-        string playfabSuccessText = "PlayFab Success";
-        
-        Debug.Log(playfabSuccessText);
-        _connectButton.Refresh(ConnectionState.Success, playfabSuccessText);
+        PlayerPrefs.SetString(AuthKey, id);
+        SceneManager.LoadScene("MainProfile");
     }
 
     private void OnLoginFailure(PlayFabError error)
