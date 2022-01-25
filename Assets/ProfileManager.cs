@@ -1,27 +1,31 @@
 using PlayFab;
 using PlayFab.ClientModels;
-using System.Collections;
-using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ProfileManager : MonoBehaviour
 {
-    [SerializeField] private Text _id;
-    // Start is called before the first frame update
+    [SerializeField] private Text welcomeLabel;
+    [SerializeField] private Text createdLabel;
+    [SerializeField] private Text errorLabel;
+    
     void Start()
     {
         PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), success =>
         {
-            _id.text = $"Welcome back, Player {success.AccountInfo.PlayFabId}";
-        }, errorCallback =>
+            welcomeLabel.text = $"Welcome back, {success.AccountInfo.Username}";
+            createdLabel.text = $"Profile was created at {success.AccountInfo.Created.ToString(CultureInfo.CurrentCulture)}";
+        }, error =>
         {
+            errorLabel.text = error.GenerateErrorReport();
         });
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    public void ClearCredentials()
     {
-        
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene("Bootstrap");
     }
 }
