@@ -41,7 +41,9 @@ public class PlayFabLogin : MonoBehaviour
             RequireBothUsernameAndEmail = true
         }, _ =>
         {
-            Debug.Log("Success");
+            Debug.Log($"Create Account Success: {_.PlayFabId}");
+            RememberCredentials(_username, _pass);
+            SceneManager.LoadScene("MainProfile");
         }, OnFailure);
     }
 
