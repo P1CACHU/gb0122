@@ -10,8 +10,8 @@ public class ProfileManager : MonoBehaviour
     [SerializeField] private Text welcomeLabel;
     [SerializeField] private Text createdLabel;
     [SerializeField] private Text errorLabel;
-    
-    void Start()
+
+    private void Start()
     {
         PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), success =>
         {
@@ -27,5 +27,10 @@ public class ProfileManager : MonoBehaviour
     {
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Bootstrap");
+    }
+    
+    public void PlayBattle()
+    {
+        SceneManager.LoadScene("ExampleScene");
     }
 }
