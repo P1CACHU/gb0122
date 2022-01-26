@@ -14,17 +14,7 @@ namespace ExampleGB
         private const string TITLE_ID = "Title ID was installed";
         private const string CONNECTION = "PlayFab Success";
         private const string CREATE_ACCOUNT_SUCCESS = "Account creation Success";
-
-        private string _username;
-        //private string _password;
-        //private string _email;
-
-        //public void UpdateInfo(AccountInfo info)
-        //{
-        //    _username = info.Username;
-        //    _password = info.Password;
-        //    _email = info.Email;
-        //}
+        private const string AUTH_KEY = "player-unique-id";
 
         public void CreateAccount(AccountInfo info)
         {
@@ -71,19 +61,16 @@ namespace ExampleGB
                 Debug.Log(TITLE_ID);
             }
 
-            var needCreation = PlayerPrefs.HasKey("player-unique-id");
-            var id = Guid.NewGuid().ToString();
-            var request = new LoginWithCustomIDRequest { CustomId = _username, CreateAccount = !needCreation };
+            var needCreation = !PlayerPrefs.HasKey(AUTH_KEY);
+            Debug.Log($"Need creation = {needCreation}");
+            var id = PlayerPrefs.GetString(AUTH_KEY, Guid.NewGuid().ToString());
+            Debug.Log($"Id = {id}");
+            var request = new LoginWithCustomIDRequest { CustomId = id, CreateAccount = needCreation };
             PlayFabClientAPI.LoginWithCustomID(request, result =>
             {
-                PlayerPrefs.SetString("player-unique-id", id);
+                PlayerPrefs.SetString(AUTH_KEY, id);
+                OnRecieveMSG?.Invoke(CONNECTION);
             }, OnLoginFailure);
-        }
-
-        private void OnLoginSuccess(LoginResult result)
-        {            
-            OnRecieveMSG?.Invoke(CONNECTION);
-            Debug.Log(CONNECTION);
         }
 
         private void OnLoginFailure(PlayFabError error)

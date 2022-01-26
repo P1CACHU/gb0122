@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using PlayFab;
+using PlayFab.ClientModels;
 
 
 namespace ExampleGB
@@ -13,45 +14,38 @@ namespace ExampleGB
         [SerializeField] private Button _connectPlayfabButton;
         [SerializeField] private Button _closeApplication;
 
-        [SerializeField] private AccountMenu _createAccountMenu;
-        [SerializeField] private AccountMenu _logInAccount;
+        [SerializeField] private AccountManager _accountManager;
         [SerializeField] private ChatFieldUI _textField;
 
         private PhotonLogin _photon;
-        private PlayFabLogin _playFab;
+        private PlayFabLogin _playFabLogin;
 
         private void Awake()
         {
             _photon = GetComponent<PhotonLogin>();
-            _playFab = new PlayFabLogin();
+            if (_playFabLogin == null) _playFabLogin = new PlayFabLogin();
         }
 
         private void Start()
         {
             _textField.Initialize();
-            _createAccountMenu.ShowMenu();
-            DisableButtons();
+            _accountManager.Initialize();
+            _playFabLogin.Connect();            
             _startPhotonButton.onClick.AddListener(() => StartPhoton());
             _shutDownPhotonButton.onClick.AddListener(() => ShutDownPhoton());
             _connectPlayfabButton.onClick.AddListener(() => StartPlayfab());
             _closeApplication.onClick.AddListener(() => Close());
             _photon.OnRecieveMSG += RecieveMessage;
-            _playFab.OnRecieveMSG += RecieveMessage;
-        }
-
-        private void Update()
-        {
-            if (_createAccountMenu.isActiveAndEnabled && Input.GetKeyDown(KeyCode.Return))
-            {
-                SignUp();
-            }
+            _playFabLogin.OnRecieveMSG += RecieveMessage;
+            _accountManager.OnCloseEvent += EnableButtons;
         }
 
         private void StartPhoton()
-        {            
+        {
             _photon.Connect();
             _startPhotonButton.interactable = false;
             _shutDownPhotonButton.interactable = true;
+            PlayerWelcome();
         }
 
         private void ShutDownPhoton()
@@ -62,16 +56,34 @@ namespace ExampleGB
         }
 
         private void StartPlayfab()
-        {            
-            _playFab.Connect();
-            _connectPlayfabButton.interactable = false;            
+        {
+            DisableButtons();
+            _accountManager.SubscribeOnRecieveInfo(GetAccountInformation);
+            _accountManager.ShowMenu();   
         }
 
-        private void SignUp()
+        private void GetAccountInformation(AccountInfo info)
         {
-            _playFab.CreateAccount(_createAccountMenu.GetAccountInfo());
-            _createAccountMenu.CloseMenu();
-            EnableButtons();
+            switch (info.LogIn)
+            {
+                case LogInType.CreateAccount:
+                    _playFabLogin.CreateAccount(info);
+                    break;
+                case LogInType.LogIn:
+                    _playFabLogin.LogIntoAccount(info);
+                    break;
+            }
+        }
+
+        private void PlayerWelcome()
+        {
+            PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), success =>
+            {
+                RecieveMessage($"Welcome back, Player {success.AccountInfo.PlayFabId}");
+                RecieveMessage($"Created {success.AccountInfo.Created.Date}");
+            }, errorCallback =>
+            {
+            });
         }
 
         private void RecieveMessage(string message)
@@ -83,6 +95,7 @@ namespace ExampleGB
         {
             _startPhotonButton.interactable = true;
             _connectPlayfabButton.interactable = true;
+            _accountManager.UnSubscribeRecieveInfo(GetAccountInformation);
         }
 
         private void DisableButtons()
@@ -95,7 +108,8 @@ namespace ExampleGB
         private void Close()
         {
             _photon.OnRecieveMSG -= RecieveMessage;
-            _playFab.OnRecieveMSG -= RecieveMessage;
+            _playFabLogin.OnRecieveMSG -= RecieveMessage;
+            _accountManager.OnCloseEvent -= EnableButtons;
             Application.Quit();
         }
     }
