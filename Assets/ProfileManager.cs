@@ -28,9 +28,4 @@ public class ProfileManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Bootstrap");
     }
-    
-    public void PlayBattle()
-    {
-        SceneManager.LoadScene("ExampleScene");
-    }
 }
