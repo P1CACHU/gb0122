@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CatalogManager : MonoBehaviour
 {
+    [SerializeField] private Transform _content;
     [SerializeField] private CatalogItemsElement _element;
     
     private readonly Dictionary<string, CatalogItem> _catalog = new Dictionary<string, CatalogItem>();
@@ -26,8 +27,11 @@ public class CatalogManager : MonoBehaviour
         foreach (var item in catalog)
         {
             _catalog.Add(item.ItemId, item);
+            if (item.VirtualCurrencyPrices.Count <= 0) 
+                continue;
+
             Debug.Log($"Item with ID {item.ItemId} was added to dictionary");
-            var element = Instantiate(_element, _element.transform.parent);
+            var element = Instantiate(_element, _content);
             element.gameObject.SetActive(true);
             element.SetItem(item);
         }
