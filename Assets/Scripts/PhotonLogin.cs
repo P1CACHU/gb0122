@@ -1,29 +1,31 @@
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PhotonLogin : MonoBehaviourPunCallbacks
 {
-    private string _roomName;
-
-    [SerializeField] private GameObject playerList;
-    [SerializeField] private GameObject createRoomPanel;
-    [SerializeField] private PlayersElement element;
-    
+    public Button button;
     private void Awake()
     {
+        //как только MasterClient вызывает загрузку следующей сцены методом
+        //PhotonNetwork.LoadLevel(), все подключенные к нему игроки
+        //автоматически делают то же самое
         PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     private void Start()
     {
-        Connect();
+        //Connect();
     }
 
+    
     public void Connect()
     {
         if (PhotonNetwork.IsConnected)
         {
-            PhotonNetwork.JoinRandomRoom();
+            //PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.Disconnect();
         }
         else
         {
@@ -31,44 +33,29 @@ public class PhotonLogin : MonoBehaviourPunCallbacks
         }
     }
 
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        if (cause== DisconnectCause.DisconnectByClientLogic)
+        {
+            button.transform.GetChild(0).GetComponent<Text>().text = "Log In";
+            button.GetComponent<Image>().color = Color.white;
+            Debug.Log(cause);
+            Debug.Log("Photon Disconnect");
+        }
+        else
+        {
+            Debug.Log("Error: "+cause);
+            button.GetComponent<Image>().color = Color.red;
+        }
+
+    }
+
     public override void OnConnectedToMaster()
     {
+        button.transform.GetChild(0).GetComponent<Text>().text = "Disconnect";
+        button.GetComponent<Image>().color = Color.green;
         base.OnConnectedToMaster();
-        PhotonNetwork.JoinRandomRoom();
+        Debug.Log("Photon Success");
     }
 
-    public void UpdateRoomName(string roomName)
-    {
-        _roomName = roomName;
-    }
-    
-    public void OnCreateRoomButtonClicked()
-    {
-        PhotonNetwork.CreateRoom(_roomName);
-    }
-    
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        Debug.LogError($"Room creation failed {message}");
-    }
-
-    public override void OnJoinedRoom()
-    {
-        createRoomPanel.SetActive(false);
-        playerList.SetActive(true);
-        foreach (var p in PhotonNetwork.PlayerList)
-        {
-            var newElement = Instantiate(element, element.transform.parent);
-            newElement.gameObject.SetActive(true);
-            newElement.SetItem(p);
-        }
-    }
-    
-    public void OnStartGameButtonClicked()
-    {
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
-
-        PhotonNetwork.LoadLevel("ExampleScene");
-    }
 }
