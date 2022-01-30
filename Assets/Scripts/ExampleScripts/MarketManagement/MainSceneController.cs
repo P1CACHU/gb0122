@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PlayFab;
+using PlayFab.ClientModels;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ namespace ExampleGB
         [SerializeField] private ShopMenu _shopMenu;
         [SerializeField] private PopUpMenu _popUpMenu;
 
+        private readonly Dictionary<string, CatalogItem> _catalog = new Dictionary<string, CatalogItem>();
         private List<IMenuObject> _menus;
         private BaseMenuObject _currentMenu;
 
@@ -24,6 +27,8 @@ namespace ExampleGB
 
         private void Start()
         {
+            PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnFailure);
+
             _menus.Add(_mainMenu);
             _menus.Add(_shopMenu);
             _menus.Add(_popUpMenu);
@@ -87,6 +92,27 @@ namespace ExampleGB
         {
             OnUpdateEvent = null;
             _currentMenu = null;
+        }
+
+        private void OnFailure(PlayFabError error)
+        {
+            var errorMessage = error.GenerateErrorReport();
+            Debug.Log($"Something wrong in catalogs: {errorMessage}");
+        }
+
+        private void OnGetCatalogSuccess(GetCatalogItemsResult result)
+        {
+            HandleCatalog(result.Catalog);
+            Debug.Log($"Catalog loaded successfully!");
+        }
+
+        private void HandleCatalog(List<CatalogItem> catalog)
+        {
+            foreach(var item in catalog)
+            {
+                _catalog.Add(item.ItemId, item);
+                Debug.Log($"Catalog item {item.ItemId} was added successfully!");
+            }
         }
     }
 }
