@@ -13,14 +13,6 @@ TagManager:
   - UI
   - 
   - 
-  - Level
-  - Props
-  - Interactable
-  - Target
-  - PlayerCollisionOnly
-  - Player
-  - PlayerEquipment
-  - SelfIgnore
   - 
   - 
   - 
@@ -36,7 +28,15 @@ TagManager:
   - 
   - 
   - 
-  - PostProcessing
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
