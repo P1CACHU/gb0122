@@ -12,7 +12,7 @@ namespace ExampleGB
         [SerializeField] private Button _startPhotonButton;
         [SerializeField] private Button _shutDownPhotonButton;
         [SerializeField] private Button _connectPlayfabButton;
-        [SerializeField] private Button _closeApplication;
+        [SerializeField] private Button _closeApplication;        
 
         [SerializeField] private AccountManager _accountManager;
         [SerializeField] private ChatFieldUI _textField;
@@ -30,11 +30,12 @@ namespace ExampleGB
         {
             _textField.Initialize();
             _accountManager.Initialize();
+            _photon.Initialize();
             _playFabLogin.Connect();            
             _startPhotonButton.onClick.AddListener(() => StartPhoton());
             _shutDownPhotonButton.onClick.AddListener(() => ShutDownPhoton());
             _connectPlayfabButton.onClick.AddListener(() => StartPlayfab());
-            _closeApplication.onClick.AddListener(() => Close());
+            _closeApplication.onClick.AddListener(() => Close());            
             _photon.OnRecieveMSG += RecieveMessage;
             _playFabLogin.OnRecieveMSG += RecieveMessage;
             _accountManager.OnCloseEvent += EnableButtons;
@@ -45,7 +46,7 @@ namespace ExampleGB
             _photon.Connect();
             _startPhotonButton.interactable = false;
             _shutDownPhotonButton.interactable = true;
-            PlayerWelcome();
+            //PlayerWelcome();
         }
 
         private void ShutDownPhoton()
@@ -59,7 +60,7 @@ namespace ExampleGB
         {
             DisableButtons();
             _accountManager.SubscribeOnRecieveInfo(GetAccountInformation);
-            _accountManager.ShowMenu();   
+            _accountManager.Show();   
         }
 
         private void GetAccountInformation(AccountInfo info)

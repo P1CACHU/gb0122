@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace ExampleGB
 {
-    public class AccountManager : MonoBehaviour, IMenuUI
+    public class AccountManager : MonoBehaviour, IUiElement
     {
         public Action OnCloseEvent;
 
@@ -19,7 +19,7 @@ namespace ExampleGB
         {            
             _createAccountMenu.Initialize(this);
             _logIntoAccountMenu.Initialize(this);
-            _close.onClick.AddListener(() => CloseMenu());            
+            _close.onClick.AddListener(() => Close());            
             _createAccountButton.onClick.AddListener(() => GoForward(LogInType.CreateAccount));
             _logInButton.onClick.AddListener(() => GoForward(LogInType.LogIn));
         }
@@ -41,23 +41,23 @@ namespace ExampleGB
             switch (type)
             {
                 case LogInType.CreateAccount:
-                    _createAccountMenu.ShowMenu();
+                    _createAccountMenu.Show();
                     break;
                 case LogInType.LogIn:
-                    _logIntoAccountMenu.ShowMenu();
+                    _logIntoAccountMenu.Show();
                     break;
             }
 
             DisableButtons();
         }
 
-        public void CloseMenu()
+        public void Close()
         {
             DisableButtons();
             OnCloseEvent?.Invoke();
         }
 
-        public void ShowMenu()
+        public void Show()
         {
             gameObject.SetActive(true);
             _close.interactable = true;

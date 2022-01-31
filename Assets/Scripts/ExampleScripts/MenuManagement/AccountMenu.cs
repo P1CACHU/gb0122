@@ -6,7 +6,7 @@ using System;
 
 namespace ExampleGB
 {
-    public sealed class AccountMenu : MonoBehaviour, IMenuUI
+    public sealed class AccountMenu : MonoBehaviour, IUiElement
     {
         public event Action<AccountInfo> OnSendingAccountInfo;
 
@@ -27,17 +27,17 @@ namespace ExampleGB
 
         public void Initialize()
         {
-            _close.onClick.AddListener(() => CloseMenu());
+            _close.onClick.AddListener(() => Close());
             _goNext.onClick.AddListener(() => GetAccountInfo());            
         }        
 
-        public void ShowMenu()
+        public void Show()
         {
             gameObject.SetActive(true);
             _username.ActivateInputField();
         }
 
-        public void CloseMenu()
+        public void Close()
         {
             _username.text = "";
             _password.text = "";
@@ -57,7 +57,7 @@ namespace ExampleGB
                 OnSendingAccountInfo?.Invoke(new AccountInfo(LogInType.LogIn, _username.name, _password.name));
             }
 
-            CloseMenu();
+            Close();
         }
     }
 }

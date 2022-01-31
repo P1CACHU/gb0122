@@ -14,6 +14,7 @@ namespace ExampleGB
         private const string TITLE_ID = "Title ID was installed";
         private const string CONNECTION = "PlayFab Success";
         private const string CREATE_ACCOUNT_SUCCESS = "Account creation Success";
+        private const string LOGIN_SUCCESS = "Login Success";
         private const string AUTH_KEY = "player-unique-id";
 
         public void CreateAccount(AccountInfo info)
@@ -21,9 +22,10 @@ namespace ExampleGB
             PlayFabClientAPI.RegisterPlayFabUser(new RegisterPlayFabUserRequest
             {
                 Username = info.Username,
-                Email = info.Email,
+                //Email = info.Email,
                 Password = info.Password,
-                RequireBothUsernameAndEmail = true
+                DisplayName = info.Username,
+                RequireBothUsernameAndEmail = false
             }, resuil =>
             {
                 OnRecieveMSG?.Invoke(CREATE_ACCOUNT_SUCCESS);
@@ -43,8 +45,8 @@ namespace ExampleGB
                 Password = info.Password,
             }, resuil =>
             {
-                OnRecieveMSG?.Invoke(CREATE_ACCOUNT_SUCCESS + " " + info.Username);
-                Debug.Log(CREATE_ACCOUNT_SUCCESS);
+                OnRecieveMSG?.Invoke(LOGIN_SUCCESS + " " + info.Username);
+                Debug.Log(LOGIN_SUCCESS);
             }, error =>
             {
                 OnRecieveMSG?.Invoke($"Error: {error}");

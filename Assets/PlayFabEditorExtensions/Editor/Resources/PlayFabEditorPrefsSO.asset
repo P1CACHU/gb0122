@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DevAccountEmail: bismard@rambler.ru
   DevAccountToken: jr4iog3n91p6kg9yidtkp6bckebtffbekabdygkyeznhxgbjyhxbjuxtz85yaeoe7mdagus4krrj754ba7kast3rt8eap54bqtb7ncyr11f8rm4ddfdrodxe4wdsofm1gw6jg5cyx4tfi4youd4qxzptsty3uesfa54asuz5sbp83yjg8op735nkon34qfik1b1z3gxs
-  SelectedStudio: 
+  SelectedStudio: Meat Addiction
   SdkPath: Assets/PlayFabSDK
   EdExPath: 
   LocalCloudScriptPath: 
