@@ -15,15 +15,12 @@ public class ProfileManager : MonoBehaviour
 
     private void Start()
     {
-        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest {}, success =>
+        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest(), success =>
         {
-            nickname.text = $"Player Name: {success.AccountInfo.Username}";
-            id.text = $"Player ID: {success.AccountInfo.PlayFabId}";
-            created.text = $"Creation time: {success.AccountInfo.Created.ToString(CultureInfo.CurrentCulture)}";
-        }, error =>
-        {
-            // errorLabel.text = error.GenerateErrorReport();
-        });
+            nickname.text = $"Player Name: {success.PlayerProfile.DisplayName}";
+            // id.text = $"Player ID: {success.AccountInfo.PlayFabId}";
+            // created.text = $"Creation time: {success.AccountInfo.Created.ToString(CultureInfo.CurrentCulture)}";
+        }, Debug.LogError);
     }
 
     public void UpdateInputFiled(string text)
@@ -33,6 +30,10 @@ public class ProfileManager : MonoBehaviour
 
     public void SaveNicknameOnPlayFab()
     {
+        PlayFabClientAPI.UpdateUserTitleDisplayName(new UpdateUserTitleDisplayNameRequest
+        {
+            DisplayName = _inputText
+        }, result => { }, Debug.LogError);
     }
     
     public void ClearCredentials()
