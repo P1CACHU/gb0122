@@ -11,14 +11,32 @@ public class CatalogManager : MonoBehaviour
 
     private void Start()
     {
-        PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), result =>
+        PlayFabClientAPI.GetStoreItems(new GetStoreItemsRequest
         {
-            Debug.Log("Get Catalog Items Success");
-            HandleCatalog(result.Catalog);
-        }, error =>
+            StoreId = "items_store"
+        }, result =>
         {
-            Debug.LogError($"Get Catalog Items Failed: {error}");
-        });
+            HandleStore(result.Store);
+        }, Debug.LogError);
+        
+        // PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), result =>
+        // {
+        //     Debug.Log("Get Catalog Items Success");
+        //     HandleCatalog(result.Catalog);
+        // }, error =>
+        // {
+        //     Debug.LogError($"Get Catalog Items Failed: {error}");
+        // });
+    }
+    
+    private void HandleStore(List<StoreItem> store)
+    {
+        foreach (var item in store)
+        {
+            var element = Instantiate(_element, _element.transform.parent);
+            element.gameObject.SetActive(true);
+            element.SetItem(item);
+        }
     }
 
     private void HandleCatalog(List<CatalogItem> catalog)
