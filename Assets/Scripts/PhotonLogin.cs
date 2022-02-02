@@ -31,12 +31,6 @@ public class PhotonLogin : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnConnectedToMaster()
-    {
-        base.OnConnectedToMaster();
-        PhotonNetwork.JoinRandomRoom();
-    }
-
     public void UpdateRoomName(string roomName)
     {
         _roomName = roomName;
