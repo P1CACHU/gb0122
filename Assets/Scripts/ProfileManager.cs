@@ -1,43 +1,105 @@
-using System.Globalization;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ProfileManager : MonoBehaviour
 {
-    [SerializeField] private Text nickname;
-    [SerializeField] private Text id;
-    [SerializeField] private Text created;
-    
-    private string _inputText;
-
-    private void Start()
+    [SerializeField] private Text _id;
+    [SerializeField] private Text _customIdInfo;
+    [SerializeField] private Text _firstLogin;
+    [SerializeField] private Text _hours;
+    [SerializeField] private Text _xp;
+    [SerializeField] private GameObject WindowLoad;
+    private const string AuthKey = "player-unique-id";
+    // Start is called before the first frame update
+    void Start()
     {
-        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest {}, success =>
+        WindowLoad.SetActive(true);
+        PlayFabClientAPI.GetAccountInfo(new GetAccountInfoRequest(), success =>
         {
-            nickname.text = $"Player Name: {success.AccountInfo.Username}";
-            id.text = $"Player ID: {success.AccountInfo.PlayFabId}";
-            created.text = $"Creation time: {success.AccountInfo.Created.ToString(CultureInfo.CurrentCulture)}";
-        }, error =>
+            WindowLoad.SetActive(false);
+            _id.text = $"{success.AccountInfo.PlayFabId}";
+            _hours.text = $"{success.AccountInfo.Created.Hour}";
+            _customIdInfo.text = $"{success.AccountInfo.CustomIdInfo.CustomId}";
+        }, errorCallback =>
         {
-            // errorLabel.text = error.GenerateErrorReport();
+            Debug.Log("Error");
+            WindowLoad.SetActive(false);
         });
-    }
 
-    public void UpdateInputFiled(string text)
-    {
-        _inputText = text;
-    }
+        PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest()
+        {
+            ProfileConstraints = new PlayerProfileViewConstraints()
+            {
+                ShowDisplayName = true,
+                ShowCreated = true,
+                ShowLastLogin = true,
+                ShowValuesToDate = true
+            }
+        }
+            , success =>
+        {
+            _firstLogin.text = success.PlayerProfile.Created.ToString();
+        }, errorCallback =>
+        {
+            Debug.Log($"Error GetPlayerProfile{errorCallback}");
+        });
 
-    public void SaveNicknameOnPlayFab()
-    {
+        PlayFabClientAPI.GetUserInventory(new GetUserInventoryRequest()
+        , success =>
+        {
+            Debug.Log("Значение кошелька загружено");
+            _xp.text = success.VirtualCurrency["XP"].ToString();
+        }, errorCallback =>
+        {
+            Debug.Log($"Error GetCharacterInventory{errorCallback}");
+        });
+
     }
-    
-    public void ClearCredentials()
+    public void DeleteProfile()
     {
-        PlayerPrefs.DeleteAll();
-        SceneManager.LoadScene("Bootstrap");
+        PlayerPrefs.DeleteKey(AuthKey);
+        Debug.Log($"Профиль удален");
+        SceneManager.LoadScene("SampleScene");
     }
 }
+
+
+//PlayFabClientAPI.GetCharacterInventory(new GetCharacterInventoryRequest()
+//{
+
+//}
+//, success =>
+// {
+//     Debug.Log("Значение кошелька загружено");
+//     _xp.text = success.VirtualCurrency["XP"].ToString();
+// },errorCallback =>
+// {
+//     Debug.Log($"Error GetCharacterInventory{errorCallback}");
+// });
+
+//PlayFabClientAPI.GetPlayerProfile(new GetPlayerProfileRequest()
+//{
+//    ProfileConstraints = new PlayerProfileViewConstraints()
+//    {
+//        ShowDisplayName = true,
+//        ShowCreated = true,
+//        ShowLastLogin = true,
+//        ShowValuesToDate = true
+//    }
+//}
+//    , success =>
+//{
+//    Debug.Log("Значение кошелька загружено");
+//    _xp.text = success.PlayerProfile.ValuesToDate[0].Currency;
+//    //_xp.text = $"{success.PlayerProfile.DisplayName} {success.PlayerProfile.ContactEmailAddresses}" +
+//    //$"{success.PlayerProfile.Created}{success.PlayerProfile.Locations}";
+//}, errorCallback =>
+//{
+//    Debug.Log($"Error GetPlayerProfile{errorCallback}");
+//});
