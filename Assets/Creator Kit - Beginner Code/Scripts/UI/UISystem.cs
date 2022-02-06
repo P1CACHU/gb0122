@@ -14,7 +14,6 @@ namespace CreatorKitCodeInternal
         public static UISystem Instance { get; private set; }
     
         [Header("Player")]
-        public CharacterControl PlayerCharacter;
         public Slider PlayerHealthSlider;
         public Text MaxHealth;
         public Text CurrentHealth;
@@ -32,6 +31,7 @@ namespace CreatorKitCodeInternal
         public AudioClip OpenInventoryClip;
         public AudioClip CloseInventoryClip;
 
+        private CharacterControl _playerCharacter;
         Sprite m_ClosedInventorySprite;
         Sprite m_OpenInventorySprite;
 
@@ -44,6 +44,10 @@ namespace CreatorKitCodeInternal
 
         void Start()
         {
+            var characterControl = FindObjectOfType<CharacterControl>();
+            if (characterControl.photonView.IsMine)
+                _playerCharacter = characterControl;
+
             m_ClosedInventorySprite = ((Image)OpenInventoryButton.targetGraphic).sprite;
             m_OpenInventorySprite = OpenInventoryButton.spriteState.pressedSprite;
 
@@ -66,15 +70,15 @@ namespace CreatorKitCodeInternal
 
         void UpdatePlayerUI()
         {
-            CharacterData data = PlayerCharacter.Data;
+            CharacterData data = _playerCharacter.Data;
         
-            PlayerHealthSlider.value = PlayerCharacter.Data.Stats.CurrentHealth / (float) PlayerCharacter.Data.Stats.stats.health;
-            MaxHealth.text = PlayerCharacter.Data.Stats.stats.health.ToString();
-            CurrentHealth.text = PlayerCharacter.Data.Stats.CurrentHealth.ToString();
+            PlayerHealthSlider.value = _playerCharacter.Data.Stats.CurrentHealth / (float)_playerCharacter.Data.Stats.stats.health;
+            MaxHealth.text = _playerCharacter.Data.Stats.stats.health.ToString();
+            CurrentHealth.text = _playerCharacter.Data.Stats.CurrentHealth.ToString();
         
-            if (PlayerCharacter.CurrentTarget != null)
+            if (_playerCharacter.CurrentTarget != null)
             {
-                UpdateEnemyUI(PlayerCharacter.CurrentTarget);
+                UpdateEnemyUI(_playerCharacter.CurrentTarget);
             }
             else
             {
@@ -135,7 +139,7 @@ namespace CreatorKitCodeInternal
             {
                 ((Image)OpenInventoryButton.targetGraphic).sprite = m_OpenInventorySprite;
                 InventoryWindow.gameObject.SetActive(true);
-                InventoryWindow.Load(PlayerCharacter.Data);
+                InventoryWindow.Load(_playerCharacter.Data);
                 SFXManager.PlaySound(SFXManager.Use.Sound2D, new SFXManager.PlayData(){ Clip = OpenInventoryClip});
             }
         }

@@ -13,10 +13,15 @@ namespace CreatorKitCodeInternal
  
         Camera m_Camera;
         RenderTexture m_TargetTexture;
+        private CharacterControl _playerCharacter;
     
         // Start is called before the first frame update
         void Start()
         {
+            var characterControl = FindObjectOfType<CharacterControl>();
+            if (characterControl.photonView.IsMine)
+                _playerCharacter = characterControl;
+
             m_TargetTexture = new RenderTexture((int)TargetImage.rectTransform.rect.width * 2, (int)TargetImage.rectTransform.rect.height * 2, 16, RenderTextureFormat.ARGB32);
         
             TargetImage.texture = m_TargetTexture;
@@ -34,9 +39,10 @@ namespace CreatorKitCodeInternal
         // Update is called once per frame
         void Update()
         {
-            Transform playerTransform = CharacterControl.Instance.transform;
-            m_Camera.transform.position = playerTransform.position + playerTransform.forward * 1.6f + Vector3.up * 1.5f;
-            m_Camera.transform.LookAt(playerTransform.position + Vector3.up * 1.0f);
+            var playerCharacterTransform = _playerCharacter.transform;
+            var playerCharacterTransformPosition = playerCharacterTransform.position;
+            m_Camera.transform.position = playerCharacterTransformPosition + playerCharacterTransform.forward * 1.6f + Vector3.up * 1.5f;
+            m_Camera.transform.LookAt(playerCharacterTransformPosition + Vector3.up * 1.0f);
 
             m_Camera.Render();
         }

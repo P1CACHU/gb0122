@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
@@ -45,6 +47,16 @@ public class PlayFabLogin : MonoBehaviour
         {
             Debug.Log($"Create Account Success: {_.PlayFabId}");
             RememberCredentials(_username, _pass);
+            PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest
+                {
+                    Data = new Dictionary<string, string>
+                    {
+                        {
+                            "Health", 3.ToString()
+                        },
+                    }
+                }, result => Debug.Log("Successfully set user data"),
+                Debug.LogError);
             SceneManager.LoadScene("MainProfile");
         }, OnFailure);
     }

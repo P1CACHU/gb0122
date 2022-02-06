@@ -26,9 +26,10 @@ namespace CreatorKitCodeInternal
             public Loot TargetLoot;
             public ButtonText TargetButton;
         }
-
+        
         public Button ButtonPrefab;
     
+        private CharacterControl _playerCharacter;
         Queue<ButtonText> m_ButtonPool = new Queue<ButtonText>();
         List<Loot> m_OffScreenLoot = new List<Loot>();
         List<DisplayedLoot> m_OnScreenLoot = new List<DisplayedLoot>();
@@ -41,6 +42,10 @@ namespace CreatorKitCodeInternal
         // Start is called before the first frame update
         void Start()
         {
+            var characterControl = FindObjectOfType<CharacterControl>();
+            if (characterControl.photonView.IsMine)
+                _playerCharacter = characterControl;
+
             const int poolSize = 16;
             for (int i = 0; i < poolSize; ++i)
             {
@@ -76,7 +81,7 @@ namespace CreatorKitCodeInternal
             dl.TargetButton.LootButton.transform.position = screenPosition + Vector3.up * BUTTON_OFFSET;
 
             dl.TargetButton.LootButton.onClick.RemoveAllListeners(); 
-            dl.TargetButton.LootButton.onClick.AddListener(() => { CharacterControl.Instance.InteractWith(l); } );
+            dl.TargetButton.LootButton.onClick.AddListener(() => { _playerCharacter.InteractWith(l); } );
         
             dl.TargetButton.LootName.text = l.Item.ItemName;
         

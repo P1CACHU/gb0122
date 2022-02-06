@@ -1,21 +1,25 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Timers;
+using Cinemachine;
 using CreatorKitCode;
 using Photon.Pun;
+using PlayFab;
+using PlayFab.ClientModels;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace CreatorKitCodeInternal {
     public class CharacterControl : MonoBehaviourPun, 
         AnimationControllerDispatcher.IAttackFrameReceiver,
         AnimationControllerDispatcher.IFootstepFrameReceiver
     {
-        public static CharacterControl Instance { get; protected set; }
-    
         public float Speed = 10.0f;
 
         public CharacterData Data => m_CharacterData;
@@ -73,8 +77,15 @@ namespace CreatorKitCodeInternal {
 
         void Awake()
         {
-            Instance = this;
             m_MainCamera = Camera.main;
+
+            if (photonView.IsMine && PhotonNetwork.IsConnected)
+            {
+                var cinemachineVirtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+                var characterTransform = transform;
+                cinemachineVirtualCamera.Follow = characterTransform;
+                cinemachineVirtualCamera.LookAt = characterTransform;
+            }
         }
 
         // Start is called before the first frame update
@@ -140,19 +151,15 @@ namespace CreatorKitCodeInternal {
         void Update()
         {
             if (!photonView.IsMine && PhotonNetwork.IsConnected)
-            {
                 return;
-            }
-            
+
             Vector3 pos = transform.position;
         
             if (m_IsKO)
             {
                 m_KOTimer += Time.deltaTime;
                 if (m_KOTimer > 3.0f)
-                {
-                    GoToRespawn();
-                }
+                    SceneManager.LoadScene("Bootstrap");
 
                 return;
             }
@@ -252,23 +259,20 @@ namespace CreatorKitCodeInternal {
                 UISystem.Instance.ToggleInventory();
         }
 
-        void GoToRespawn()
+        private void OnDestroy()
         {
-            m_Animator.ResetTrigger(m_HitParamID);
-        
-            m_Agent.Warp(m_CurrentSpawn.transform.position);
-            m_Agent.isStopped = true;
-            m_Agent.ResetPath();
-            m_IsKO = false;
-
-            m_CurrentTargetCharacterData = null;
-            m_TargetInteractable = null;
-
-            m_CurrentState = State.DEFAULT;
-        
-            m_Animator.SetTrigger(m_RespawnParamID);
-        
-            m_CharacterData.Stats.ChangeHealth(m_CharacterData.Stats.stats.health);
+            PlayFabClientAPI.UpdateUserData(new UpdateUserDataRequest
+            {
+                Data = new Dictionary<string, string>
+                {
+                    {"Health", m_CharacterData.Stats.CurrentHealth.ToString()}
+                }
+            },
+            result => Debug.Log("Successfully updated user data"),
+            error => {
+                Debug.Log("Got error setting user data Ancestor to Arthur");
+                Debug.Log(error.GenerateErrorReport());
+            });
         }
 
         void ObjectsRaycasts(Ray screenRay)

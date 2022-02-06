@@ -156,6 +156,9 @@ namespace CreatorKitCode
     
         public void Init(CharacterData owner)
         {
+            var playerHealth = Resources.Load<PlayerHealth>(nameof(PlayerHealth));
+            baseStats.health = playerHealth.health;
+
             stats.Copy(baseStats);
             CurrentHealth = stats.health;
             m_Owner = owner;

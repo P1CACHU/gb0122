@@ -35,11 +35,16 @@ namespace CreatorKitCodeInternal {
 
         State m_State;
 
+        private CharacterControl _playerCharacter;
         LootSpawner m_LootSpawner;
     
         // Start is called before the first frame update
         void Start()
         {
+            var characterControl = FindObjectOfType<CharacterControl>();
+            if (characterControl.photonView.IsMine)
+                _playerCharacter = characterControl;
+
             m_Animator = GetComponentInChildren<Animator>();
             m_Agent = GetComponent<NavMeshAgent>();
         
@@ -90,8 +95,8 @@ namespace CreatorKitCodeInternal {
             //NOTE : in a full game, this would use a targetting system that would give the closest target
             //of the opposing team (e.g. multiplayer or player owned pets). Here for simplicity we just reference
             //directly the player.
-            Vector3 playerPosition = CharacterControl.Instance.transform.position;
-            CharacterData playerData = CharacterControl.Instance.Data;
+            Vector3 playerPosition = _playerCharacter.transform.position;
+            CharacterData playerData = _playerCharacter.Data;
         
             switch (m_State)
             {
@@ -175,7 +180,7 @@ namespace CreatorKitCodeInternal {
 
         public void AttackFrame()
         {
-            CharacterData playerData = CharacterControl.Instance.Data;
+            CharacterData playerData = _playerCharacter.Data;
             
             //if we can't reach the player anymore when it's time to damage, then that attack miss.
             if (!m_CharacterData.CanAttackReach(playerData))
