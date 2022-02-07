@@ -1,10 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
 
 namespace ExampleGB
 {
-    public abstract class BaseSceneObject : MonoBehaviour
+    public abstract class BaseSceneObject : MonoBehaviourPun
     {
         protected RaycastHit hit;
 

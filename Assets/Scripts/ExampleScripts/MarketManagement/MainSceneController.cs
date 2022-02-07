@@ -27,6 +27,14 @@ namespace ExampleGB
 
         private void Start()
         {
+            PlayFabClientAPI.GetStoreItems(new GetStoreItemsRequest
+            {
+                StoreId = "items_store"
+            }, result =>
+            {
+                OnGetItemsSuccess(result.Store);
+            }, OnFailure);
+
             PlayFabClientAPI.GetCatalogItems(new GetCatalogItemsRequest(), OnGetCatalogSuccess, OnFailure);
 
             _menus.Add(_mainMenu);
@@ -104,6 +112,14 @@ namespace ExampleGB
         {
             HandleCatalog(result.Catalog);
             Debug.Log($"Catalog loaded successfully!");
+        }
+
+        private void OnGetItemsSuccess(List<StoreItem> store)
+        {
+            foreach (var item in store)
+            {
+                //заполнить инвентарь
+            }
         }
 
         private void HandleCatalog(List<CatalogItem> catalog)

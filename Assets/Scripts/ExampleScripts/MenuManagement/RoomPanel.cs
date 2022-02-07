@@ -40,7 +40,7 @@ namespace ExampleGB
 
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                _roomElements[increment].Show(player.NickName);
+                _roomElements[increment].Show(player.UserId);
                 increment++;
             }
         }

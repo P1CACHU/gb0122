@@ -99,7 +99,7 @@ namespace ExampleGB
 
         public void JoinRandomRoom()
         {
-            PhotonNetwork.JoinRandomRoom();            
+            PhotonNetwork.JoinRandomRoom();
         }
 
         public override void OnCreateRoomFailed(short returnCode, string message)
@@ -117,6 +117,8 @@ namespace ExampleGB
                 Debug.Log($"User {player.UserId} joined to room");
                 _roomPanel.Show();
             }
+
+            _startGame.interactable = true;
 
 
             //foreach (Player player in PhotonNetwork.PlayerList)
@@ -136,7 +138,7 @@ namespace ExampleGB
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
-            PhotonNetwork.LoadLevel(1); //todo
+            PhotonNetwork.LoadLevel(2); //todo
         }
     }
 }

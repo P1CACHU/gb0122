@@ -25,9 +25,7 @@ namespace ExampleGB
         public void Initialize()
         {
             var spawnPoint = _spawnPositions.Skip(UnityEngine.Random.Range(0, _spawnPositions.Count())).FirstOrDefault();
-            _currentCar = _pool.CreateCar<CarModel>(_carSettings.CarPrefab);
-            _currentCar.Transform.position = spawnPoint.position;
-            _currentCar.Transform.rotation = spawnPoint.rotation;
+            _currentCar = _pool.CreateCar<CarModel>(_carSettings.CarPrefab.name, spawnPoint.position, spawnPoint.rotation);            
             _createdCarData.SetValue(_currentCar);
             _currentCar.FirstStarting(_carSettings, _createdCarData);
             UpdateManager.SubscribeToUpdate(Execute);

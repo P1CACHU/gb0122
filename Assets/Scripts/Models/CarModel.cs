@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace ExampleGB
 {
-    public sealed class CarModel : BaseSceneObject, IDisposable
+    public sealed class CarModel : BaseSceneObject, IDisposable, IPunObservable
     {
         private CarSObject _carSObject;
         private SelectedCarData _selectedCarData;
@@ -79,8 +80,13 @@ namespace ExampleGB
 
         public void Ride()
         {
+            if(!photonView.IsMine && PhotonNetwork.IsConnected)
+            {
+                return;
+            }
+
             Speed = Rigidbody.velocity.magnitude * _KPHcoefficient;
-            _speedDamage = _baseDamage + Rigidbody.velocity.magnitude;    
+            _speedDamage = _baseDamage + Rigidbody.velocity.magnitude;  
         }
 
         public void FixedRide()
@@ -122,6 +128,18 @@ namespace ExampleGB
             
             _throttle = throttle;
             _steer = steer;
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(Health);
+            }
+            else
+            {
+                Health = (float)stream.ReceiveNext();
+            }
         }
 
         public void Dispose()
@@ -198,6 +216,6 @@ namespace ExampleGB
             {
                 setDamage.OnCollision(new InfoCollision(_speedDamage, Transform));
             }
-        }
+        }        
     }
 }
