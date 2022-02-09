@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Cinemachine;
+using Photon.Pun;
 
 
 namespace ExampleGB
@@ -30,9 +29,7 @@ namespace ExampleGB
         {          
             CreateControllers();
             StartControllers();
-
-            _camera.Follow = _createdCarData.Value.MouseLookAt;
-            _camera.LookAt = _createdCarData.Value.MouseLookAt;
+            SetCameraControl();
         }
 
         private void CreateControllers()
@@ -47,6 +44,15 @@ namespace ExampleGB
             {
                 controller.Initialize();
             }            
+        }
+
+        private void SetCameraControl()
+        {
+            if (_createdCarData.Value.GetComponent<PhotonView>().IsMine) //нужно проверить
+            {
+                _camera.Follow = _createdCarData.Value.MouseLookAt;
+                _camera.LookAt = _createdCarData.Value.MouseLookAt;
+            }
         }
     }
 }
