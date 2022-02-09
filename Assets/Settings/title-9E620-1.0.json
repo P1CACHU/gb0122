@@ -1,0 +1,178 @@
+{
+  "CatalogVersion": "1.0",
+  "Catalog": [
+    {
+      "ItemId": "rrw_1",
+      "ItemClass": "Arrow",
+      "CatalogVersion": "1.0",
+      "DisplayName": "Arrow level 1",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "HC": 50
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "cnt_1",
+      "ItemClass": "Arrow",
+      "CatalogVersion": "1.0",
+      "DisplayName": "Arrow container",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "RM": 99
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": 1,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": {
+        "KeyItemId": null,
+        "ItemContents": [
+          "rrw_1",
+          "rrw_2"
+        ],
+        "ResultTableContents": [],
+        "VirtualCurrencyContents": null
+      },
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": true,
+      "InitialLimitedEditionCount": 1,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "rrw_2",
+      "ItemClass": "Arrow",
+      "CatalogVersion": "1.0",
+      "DisplayName": "Arrow level 2",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "RM": 149
+      },
+      "RealCurrencyPrices": null,
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "rrw_3",
+      "ItemClass": "Arrow",
+      "CatalogVersion": "1.0",
+      "DisplayName": "Arrow level 3",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "RM": 149
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [
+        "weapon"
+      ],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": false,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    },
+    {
+      "ItemId": "c_1",
+      "ItemClass": "Character",
+      "CatalogVersion": "1.0",
+      "DisplayName": "Character base",
+      "Description": null,
+      "VirtualCurrencyPrices": {
+        "HC": 100
+      },
+      "RealCurrencyPrices": {},
+      "Tags": [],
+      "CustomData": null,
+      "Consumable": {
+        "UsageCount": null,
+        "UsagePeriod": null,
+        "UsagePeriodGroup": null
+      },
+      "Container": null,
+      "Bundle": null,
+      "CanBecomeCharacter": true,
+      "IsStackable": false,
+      "IsTradable": false,
+      "ItemImageUrl": null,
+      "IsLimitedEdition": false,
+      "InitialLimitedEditionCount": 0,
+      "ActivatedMembership": null
+    }
+  ],
+  "DropTables": [
+    {
+      "TableId": "dt_1",
+      "Nodes": [
+        {
+          "ResultItemType": "ItemId",
+          "ResultItem": "rrw_1",
+          "Weight": 1
+        },
+        {
+          "ResultItemType": "ItemId",
+          "ResultItem": "rrw_2",
+          "Weight": 1
+        },
+        {
+          "ResultItemType": "ItemId",
+          "ResultItem": "rrw_3",
+          "Weight": 1
+        }
+      ]
+    }
+  ]
+}
