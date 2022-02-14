@@ -57,20 +57,8 @@ namespace CreatorKitCode
         void Awake()
         {
             Animator anim = GetComponentInChildren<Animator>();
-            if(anim != null)
+            if (anim != null)
                 SceneLinkedSMB<CharacterData>.Initialise(anim, this);
-        }
-        
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if (stream.IsWriting)
-            {
-                stream.SendNext(Stats.stats.health);
-            }
-            else
-            {
-                Stats.stats.health = (int)stream.ReceiveNext();
-            }
         }
 
         // Update is called once per frame
@@ -166,6 +154,18 @@ namespace CreatorKitCode
             Stats.Damage(attackData);
             
             OnDamage?.Invoke();
+        }
+        
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(Stats.stats.health);
+            }
+            else
+            {
+                Stats.stats.health = (int)stream.ReceiveNext();
+            }
         }
     }
 }
